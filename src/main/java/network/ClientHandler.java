@@ -55,7 +55,7 @@ public class ClientHandler implements Runnable {
         this.currentRoom = ClientManager.getInstance().getOrCreateRoom(itemId);
         this.currentRoom.addClient(this);
         if (this.currentRoom.getRemainingSeconds() == 0 && !this.currentRoom.isClosed()) {
-          this.currentRoom.startAuction(600);
+          this.currentRoom.startAuction(15);
         }
         System.out.println("Client đã tham gia phòng: " + itemId);
         sendMessage(new MessageEnvelop(MessageType.JOIN_SUCCESS, "Tham gia phòng " + itemId + " thành công!"));

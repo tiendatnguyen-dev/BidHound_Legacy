@@ -7,6 +7,7 @@ import dto.mapper.PlaceBidResponse;
 import dto.util.JsonConverter;
 import dto.util.MessageEnvelop;
 import dto.util.MessageType;
+import service.AuctionService;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -25,6 +26,8 @@ public class AuctionRoom {
   private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
   private final Set<ClientHandler> clients = new CopyOnWriteArraySet<>();
   private final ReentrantLock lock = new ReentrantLock();
+  private final AuctionService auctionService = new AuctionService();
+
 
   public AuctionRoom(Long itemId) {
     this.itemId = itemId;
@@ -47,28 +50,7 @@ public class AuctionRoom {
   public void placeBid(ClientHandler sender, PlaceBidRequest placeBidRequest) {
     lock.lock();
     try {
-      if (isClosed) {
-        MessageEnvelop messageEnvelop = new MessageEnvelop(MessageType.ERROR, "The auction is closed!");
-        sender.sendMessage(messageEnvelop);
-      } else {
-        Bid bid = BidMapper.toEntity(placeBidRequest);
-        if (bid.getAmount().compareTo(currentPrice) > 0) {
-          currentPrice = bid.getAmount();
-          currentWinnerId = bid.getBidderId();
-          PlaceBidResponse response = BidMapper.toDTO(bid, "Success");
-          MessageEnvelop messageEnvelop = new MessageEnvelop(MessageType.BID_BROADCAST, JsonConverter.toJson(response));
-          broadcast(messageEnvelop);
-          if (remainingSeconds <= 10) {
-            remainingSeconds += 15;
-            MessageEnvelop message = new MessageEnvelop(MessageType.TIMER_EXTEND, "Hệ thống tự động gia hạn thêm" +
-                    " 15 giây do có người đặt giá ở giây cuối!");
-            broadcast(message);
-          }
-        } else {
-          MessageEnvelop messageEnvelop = new MessageEnvelop(MessageType.ERROR, "Bid phải lớn hơn giá đặt hiện tại.!");
-          sender.sendMessage(messageEnvelop);
-        }
-      }
+      auctionService.processBid(this, sender, placeBidRequest);
     } finally {
       lock.unlock();
     }
@@ -89,6 +71,9 @@ public class AuctionRoom {
                   "User " + currentWinnerId + " với giá: " + currentPrice;
           MessageEnvelop endMsg = new MessageEnvelop(MessageType.AUCTION_ENDED, payload);
           broadcast(endMsg);
+
+          auctionService.finalizeAuction(this.itemId, this.currentWinnerId, this.currentPrice);
+
           scheduler.shutdown();
         }
       } finally {
@@ -96,12 +81,45 @@ public class AuctionRoom {
       }
     };
     scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
-    };
+  }
+
+  ;
 
   public int getRemainingSeconds() {
     return remainingSeconds;
   }
+
+  public void setRemainingSeconds(int remainingSeconds) {
+    this.remainingSeconds = remainingSeconds;
+  }
+
   public boolean isClosed() {
     return isClosed;
   }
+
+  public BigDecimal getCurrentPrice() {
+    return currentPrice;
+  }
+
+  public Long getItemId() {
+    return itemId;
+  }
+
+  public Long getCurrentWinnerId() {
+    return currentWinnerId;
+  }
+
+  public void setCurrentWinnerId(Long currentWinnerId) {
+    this.currentWinnerId = currentWinnerId;
+  }
+
+  public void setCurrentPrice(BigDecimal currentPrice) {
+    this.currentPrice = currentPrice;
+  }
+
+  public void extendTime(int seconds) {
+    this.remainingSeconds += seconds;
+  }
 }
+
+

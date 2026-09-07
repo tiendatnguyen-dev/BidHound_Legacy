@@ -7,6 +7,8 @@ public class Item {
   private String title;
   private BigDecimal currentPrice;
   private Long sellerId;
+  private Long winnerId;
+  private String status; // ACTIVE - ENDED
 
   public Item() {
   }
@@ -49,4 +51,22 @@ public class Item {
   public void setSellerId(Long sellerId) {
     this.sellerId = sellerId;
   }
+
+  public Long getWinnerId() {
+    return winnerId;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public void setWinnerId(Long winnerId) {
+    this.winnerId = winnerId;
+  }
 }
+
+

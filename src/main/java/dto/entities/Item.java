@@ -1,6 +1,9 @@
 package dto.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Item {
   private Long id;
@@ -8,7 +11,9 @@ public class Item {
   private BigDecimal currentPrice;
   private Long sellerId;
   private Long winnerId;
+  private LocalDateTime endTime;
   private String status; // ACTIVE - ENDED
+  private final CopyOnWriteArraySet<Bid> bidHistory = new CopyOnWriteArraySet<>();
 
   public Item() {
   }
@@ -66,6 +71,21 @@ public class Item {
 
   public void setWinnerId(Long winnerId) {
     this.winnerId = winnerId;
+  }
+
+  public void addBid(Bid bid) {
+    bidHistory.add(bid);
+  }
+  public CopyOnWriteArraySet<Bid> getBidHistory() {
+    return bidHistory;
+  }
+
+  public void setEndTime(LocalDateTime endTime) {
+    this.endTime = endTime;
+  }
+
+  public LocalDateTime getEndTime() {
+    return endTime;
   }
 }
 

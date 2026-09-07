@@ -10,24 +10,30 @@ import network.AuctionRoom;
 import network.ClientHandler;
 import network.ClientManager;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 public class RoomService {
   private final ItemDao itemDao = new ItemDaoImpl();
 
-  public void handleJoinRoom(ClientHandler client, MessageEnvelop message, AuctionRoom currentRoom) {
+  public AuctionRoom handleJoinRoom(ClientHandler client, MessageEnvelop message) {
     Long itemId = Long.parseLong(message.payload());
-    currentRoom = ClientManager.getInstance().getOrCreateRoom(itemId);
+    AuctionRoom currentRoom = ClientManager.getInstance().getOrCreateRoom(itemId);
     currentRoom.addClient(client);
+    Item item = itemDao.findById(itemId);
 
     if (currentRoom.getRemainingSeconds() == 0 && !currentRoom.isClosed()) {
-      currentRoom.startAuction(15);
+      if (item.getEndTime() != null) {
+        int remaining = (int) LocalDateTime.now().until(item.getEndTime(), ChronoUnit.SECONDS);
+        currentRoom.startAuction(Math.max(remaining, 0));
+      }
     }
 
-    Item item = itemDao.findById(itemId);
     String payload = JsonConverter.toJson(item);
-
     client.sendMessage(new MessageEnvelop(MessageType.JOIN_SUCCESS, "Tham gia phòng " + itemId + " thành công!"));
     client.sendMessage(new MessageEnvelop(MessageType.ROOM_INIT, payload));
 
     System.out.println("Client đã tham gia phòng: " + itemId);
+    return currentRoom;
   }
 }

@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable {
   public void handleMessage(MessageEnvelop message) {
     switch (message.type()) {
       case JOIN_ROOM: {
-        roomService.handleJoinRoom(this, message, currentRoom);
+        this.currentRoom = roomService.handleJoinRoom(this, message);
         break;
       }
       case LEAVE_ROOM: {

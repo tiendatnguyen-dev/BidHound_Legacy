@@ -6,12 +6,14 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class ItemDaoImpl implements ItemDao{
   @Override
   public Item findById(Long id) {
     Item item = new Item();
-    String sql = "SELECT id,title,seller_id,winner_id,current_price,status FROM items WHERE id = ?";
+    String sql = "SELECT id,title,seller_id,winner_id,current_price,status,end_time FROM items WHERE id = ?";
     try (Connection conn = DatabaseConnection.getInstance().getConnection();
          PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
       preparedStatement.setLong(1,id);
@@ -23,12 +25,14 @@ public class ItemDaoImpl implements ItemDao{
         Long winnerId = rs.getLong("winner_id");
         BigDecimal currPrice = rs.getBigDecimal("current_price");
         String status = rs.getString("status");
+        LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
         item.setId(itemId);
         item.setTitle(title);
         item.setSellerId(sellerId);
         item.setWinnerId(winnerId);
         item.setCurrentPrice(currPrice);
         item.setStatus(status);
+        item.setEndTime(endTime);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -59,6 +63,19 @@ public class ItemDaoImpl implements ItemDao{
       preparedStatement.setString(1, status);
       preparedStatement.setLong(2, itemId);
       preparedStatement.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public void updateEndTime(Long itemId, LocalDateTime newEndTime) {
+    String sql = "UPDATE items SET end_time = ? WHERE id = ?";
+    try (Connection conn = DatabaseConnection.getInstance().getConnection();
+         PreparedStatement stm = conn.prepareStatement(sql)) {
+      stm.setString(1, newEndTime.toString());
+      stm.setTimestamp(2, Timestamp.valueOf(newEndTime));
+      stm.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }

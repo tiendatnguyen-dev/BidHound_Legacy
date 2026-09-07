@@ -33,9 +33,11 @@ public class ClientHandler implements Runnable {
         handleMessage(messageEnvelop);
       }
     } catch (IOException e) {
-      e.printStackTrace();
-      this.currentRoom.removeClient(this);
-      currentRoom = null;
+      System.out.println("Client đã ngắt kết nối.");
+      if (this.currentRoom != null) {
+        this.currentRoom.removeClient(this);
+        this.currentRoom = null;
+      }
     }
   }
 
@@ -52,7 +54,9 @@ public class ClientHandler implements Runnable {
         Long itemId = Long.parseLong(message.payload());
         this.currentRoom = ClientManager.getInstance().getOrCreateRoom(itemId);
         this.currentRoom.addClient(this);
-
+        if (this.currentRoom.getRemainingSeconds() == 0 && !this.currentRoom.isClosed()) {
+          this.currentRoom.startAuction(600);
+        }
         System.out.println("Client đã tham gia phòng: " + itemId);
         sendMessage(new MessageEnvelop(MessageType.JOIN_SUCCESS, "Tham gia phòng " + itemId + " thành công!"));
         break;
@@ -69,6 +73,7 @@ public class ClientHandler implements Runnable {
 
         if (this.currentRoom != null) {
           this.currentRoom.placeBid(this, bidRequest);
+          System.out.println("[NEW_BID]" + bidRequest.itemId() + ": " + bidRequest.amount() + " From " + bidRequest.bidderId());
         } else {
           sendMessage(new MessageEnvelop(MessageType.ERROR, "Bạn chưa tham gia phòng đấu giá nào!"));
         }

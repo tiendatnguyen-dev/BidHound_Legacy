@@ -5,6 +5,7 @@ import dto.mapper.PlaceBidRequest;
 import dto.util.JsonConverter;
 import dto.util.MessageEnvelop;
 import dto.util.MessageType;
+import service.RoomService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class ClientHandler implements Runnable {
   private final Socket socket;
   private PrintWriter printWriter;
   private AuctionRoom currentRoom;
+  private RoomService roomService = new RoomService();
 
   public ClientHandler(Socket socket) {
     this.socket = socket;
@@ -51,14 +53,7 @@ public class ClientHandler implements Runnable {
   public void handleMessage(MessageEnvelop message) {
     switch (message.type()) {
       case JOIN_ROOM: {
-        Long itemId = Long.parseLong(message.payload());
-        this.currentRoom = ClientManager.getInstance().getOrCreateRoom(itemId);
-        this.currentRoom.addClient(this);
-        if (this.currentRoom.getRemainingSeconds() == 0 && !this.currentRoom.isClosed()) {
-          this.currentRoom.startAuction(15);
-        }
-        System.out.println("Client đã tham gia phòng: " + itemId);
-        sendMessage(new MessageEnvelop(MessageType.JOIN_SUCCESS, "Tham gia phòng " + itemId + " thành công!"));
+        roomService.handleJoinRoom(this, message, currentRoom);
         break;
       }
       case LEAVE_ROOM: {

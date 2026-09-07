@@ -1,10 +1,6 @@
 package network;
 
-import dto.entities.Bid;
-import dto.mapper.BidMapper;
 import dto.mapper.PlaceBidRequest;
-import dto.mapper.PlaceBidResponse;
-import dto.util.JsonConverter;
 import dto.util.MessageEnvelop;
 import dto.util.MessageType;
 import service.AuctionService;
@@ -17,6 +13,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * Quản lí 1 AuctionRoom phía Server, giúp gửi thông báo về phía Client.
+ */
 public class AuctionRoom {
   private final Long itemId;
   private BigDecimal currentPrice = BigDecimal.ZERO;

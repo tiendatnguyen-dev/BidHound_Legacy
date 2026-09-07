@@ -1,8 +1,9 @@
 package network;
 
 import dto.mapper.PlaceBidRequest;
-import dto.mapper.PlaceBidResponse;
 import dto.util.JsonConverter;
+import dto.util.MessageEnvelop;
+import dto.util.MessageType;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,16 +19,29 @@ public class ClientSide {
          BufferedReader serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
          PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-      PlaceBidRequest request = new PlaceBidRequest(101L, 5001L, new BigDecimal("250000"));
-      String jsonRequest = JsonConverter.toJson(request);
-      out.println(jsonRequest);
+      new Thread(() -> {
+        try {
+          String jsonResponse;
+          while ((jsonResponse = serverIn.readLine()) != null) {
+            MessageEnvelop responseEnv = JsonConverter.fromJson(jsonResponse, MessageEnvelop.class);
+            System.out.println("[CLIENT NHẬN TIN] Type: " + responseEnv.type() + " | Payload: " + responseEnv.payload());
+          }
+        } catch (Exception e) {
+          System.out.println("Kết nối tới Server bị đóng.");
+        }
+      }).start();
 
-      String jsonResponse = serverIn.readLine();
-      System.out.println("[Client] Response from server: " + jsonResponse);
-      PlaceBidResponse response = JsonConverter.fromJson(jsonResponse, PlaceBidResponse.class);
-      System.out.println(response.statusMessage());
-      System.out.println(response.currentPrice());
-      System.out.println(response.bidTime());
+      MessageEnvelop joinMsg = new MessageEnvelop(MessageType.JOIN_ROOM, "101");
+      out.println(JsonConverter.toJson(joinMsg));
+
+      Thread.sleep(500);
+
+      PlaceBidRequest request = new PlaceBidRequest(101L, 5001L, new BigDecimal("300000"));
+      MessageEnvelop bidMsg = new MessageEnvelop(MessageType.PLACE_BID, JsonConverter.toJson(request));
+      out.println(JsonConverter.toJson(bidMsg));
+
+      Thread.sleep(10000);
+
     } catch (Exception e) {
       e.printStackTrace();
     }

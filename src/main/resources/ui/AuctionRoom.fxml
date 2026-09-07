@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="650.0" prefWidth="950.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.AuctionRoomController">
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-background-color: #0d1629; -fx-border-color: rgba(255,255,255,0.08); -fx-border-width: 0 0 1 0;" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+         </padding>
+         <children>
+            <Label styleClass="title-label" text="🔨 BidHound Realtime Auction" />
+            <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" spacing="15.0">
+               <children>
+                  <Label fx:id="userBalanceLabel" styleClass="price-label" style="-fx-font-size: 16px;" text="Số dư: 10.000.000 ₫" />
+                  <Label fx:id="userNameLabel" styleClass="sub-label" text="User: Alice (ID: 1001)" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <HBox spacing="20.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <children>
+            <!-- CỘT TRÁI: THÔNG TIN SẢN PHẨM, TIMER & FORM ĐẶT GIÁ -->
+            <VBox spacing="15.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <!-- THÔNG TIN PHÒNG -->
+                  <VBox spacing="10.0" styleClass="card">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label fx:id="itemTitleLabel" styleClass="title-label" text="iPhone 15 Pro Max 256GB" />
+                        <Label fx:id="itemDetailLabel" styleClass="sub-label" text="Mã sản phẩm: #101 | Người bán: Alice" />
+                     </children>
+                  </VBox>
+                  
+                  <!-- COUNTDOWN TIMER -->
+                  <VBox fx:id="timerCardBox" alignment="CENTER" spacing="5.0" styleClass="timer-card">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <Label fx:id="timerLabel" styleClass="timer-text" text="09:45" />
+                        <Label styleClass="sub-label" text="Thời gian còn lại" />
+                     </children>
+                  </VBox>
+                  
+                  <!-- GIÁ HIỆN TẠI & NGƯỜI DẪN ĐẦU -->
+                  <HBox spacing="15.0">
+                     <children>
+                        <VBox spacing="5.0" styleClass="price-card" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="sub-label" text="GIÁ HIỆN TẠI" />
+                              <Label fx:id="currentPriceLabel" styleClass="price-label" text="1.500.000 ₫" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0" styleClass="card" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                           <children>
+                              <Label styleClass="sub-label" text="NGƯỜI DẪN ĐẦU" />
+                              <Label fx:id="currentWinnerLabel" style="-fx-text-fill: #f1f5f9; -fx-font-size: 20px; -fx-font-weight: bold;" text="Bob (ID: 2002)" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  
+                  <!-- FORM ĐẶT GIÁ -->
+                  <VBox spacing="12.0" styleClass="card">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label style="-fx-text-fill: #f1f5f9; -fx-font-size: 15px; -fx-font-weight: bold;" text="Đặt giá của bạn" />
+                        <HBox spacing="10.0">
+                           <children>
+                              <TextField fx:id="bidInputField" promptText="Nhập số tiền VNĐ..." HBox.hgrow="ALWAYS" />
+                              <Button fx:id="placeBidButton" mnemonicParsing="false" onAction="#handlePlaceBid" styleClass="btn-primary" text="🔨 Đặt Giá" />
+                           </children>
+                        </HBox>
+                        <!-- Nút tăng nhanh -->
+                        <HBox spacing="8.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#handleQuickBid50k" styleClass="btn-quick" text="+50.000 ₫" />
+                              <Button mnemonicParsing="false" onAction="#handleQuickBid100k" styleClass="btn-quick" text="+100.000 ₫" />
+                              <Button mnemonicParsing="false" onAction="#handleQuickBid500k" styleClass="btn-quick" text="+500.000 ₫" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+            
+            <!-- CỘT PHẢI: LỊCH SỬ ĐẶT GIÁ REALTIME -->
+            <VBox prefWidth="340.0" spacing="12.0" styleClass="card">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+               <children>
+                  <Label style="-fx-text-fill: #f1f5f9; -fx-font-size: 16px; -fx-font-weight: bold;" text="Lịch sử đặt giá Realtime" />
+                  <ListView fx:id="bidHistoryListView" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </center>
+</BorderPane>

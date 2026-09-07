@@ -1,5 +1,6 @@
 package dao;
 
+import dto.entities.Bid;
 import dto.entities.Item;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class ItemDaoImpl implements ItemDao{
+  private final BidDao bidDao = new BidDaoImpl();
   @Override
   public Item findById(Long id) {
     Item item = new Item();
@@ -33,6 +35,9 @@ public class ItemDaoImpl implements ItemDao{
         item.setCurrentPrice(currPrice);
         item.setStatus(status);
         item.setEndTime(endTime);
+        for (Bid bid : bidDao.findByItemId(itemId)) {
+          item.addBid(bid);
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();

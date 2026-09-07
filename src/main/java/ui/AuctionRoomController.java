@@ -48,7 +48,7 @@ public class AuctionRoomController implements NetworkMessageListener {
   @FXML
   private Button placeBidButton;
   @FXML
-  private ListView<String> bidHistoryListView;
+  private ListView<PlaceBidResponse> bidHistoryListView;
   private Long itemId;
   private Long userId;
 
@@ -56,6 +56,7 @@ public class AuctionRoomController implements NetworkMessageListener {
   @FXML
   public void initialize() {
     ClientSide.getInstance().addListener(this);
+    bidHistoryListView.setCellFactory(listView -> new BidListCell());
   }
 
   @FXML
@@ -118,8 +119,8 @@ public class AuctionRoomController implements NetworkMessageListener {
 
           itemTitleLabel.setText(item.getTitle());
           itemDetailLabel.setText("Mã sản phẩm: " + item.getId() + " | " + "Người bán: " + item.getSellerId());
-          currentPriceLabel.setText(item.getCurrentPrice().toString());
-          currentWinnerLabel.setText(item.getWinnerId().toString());
+          currentPriceLabel.setText(item.getCurrentPrice() != null ? item.getCurrentPrice().toString() : "0");
+          currentWinnerLabel.setText(item.getWinnerId() != null ? item.getWinnerId().toString() : "Chưa có");
 
           int remainingSeconds = 0;
           if (item.getEndTime() != null) {
@@ -129,8 +130,11 @@ public class AuctionRoomController implements NetworkMessageListener {
           timerLabel.setText(TimeCounter.timeFormatter(remainingSeconds));
 
           for (Bid bid : item.getBidHistory()) {
-            bidHistoryListView.getItems().add("ID: " + bid.getBidderId() + " Amount: " + bid.getAmount() +
-                    " " + bid.getCreatedAt());
+            PlaceBidResponse bidResponse = new PlaceBidResponse(
+                    bid.getId(), bid.getItemId(), bid.getAmount(),
+                    bid.getBidderId(), bid.getCreatedAt(), "History"
+            );
+            bidHistoryListView.getItems().add(bidResponse);
           }
         });
         break;
@@ -159,8 +163,7 @@ public class AuctionRoomController implements NetworkMessageListener {
         Platform.runLater(() -> {
           currentWinnerLabel.setText(bid.highestBidderId().toString());
           currentPriceLabel.setText(bid.currentPrice().toString());
-          bidHistoryListView.getItems().add(0, "ID: " + bid.highestBidderId() + " Amount: " + bid.currentPrice() +
-                  " " + bid.bidTime());
+          bidHistoryListView.getItems().add(0, bid);
         });
         break;
       }
@@ -197,5 +200,15 @@ public class AuctionRoomController implements NetworkMessageListener {
     this.userId = userId;
     MessageEnvelop joinMsg = new MessageEnvelop(MessageType.JOIN_ROOM, String.valueOf(itemId));
     ClientSide.getInstance().send(joinMsg);
+  }
+
+  /**
+   * Dọn dẹp trước khi đóng cửa sổ: gửi LEAVE_ROOM và hủy listener để tránh memory leak.
+   */
+  public void cleanup() {
+    if (itemId != null) {
+      ClientSide.getInstance().send(new MessageEnvelop(MessageType.LEAVE_ROOM, String.valueOf(itemId)));
+    }
+    ClientSide.getInstance().removeListener(this);
   }
 }

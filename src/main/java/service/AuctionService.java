@@ -21,7 +21,6 @@ import network.ClientHandler;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 public class AuctionService {
   private final ItemDao itemDao = new ItemDaoImpl();
@@ -44,6 +43,12 @@ public class AuctionService {
       return;
     }
 
+    dto.entities.User bidder = userDao.findUserById(placeBidRequest.bidderId());
+    if (bidder == null || bidder.getBalance() == null || bidder.getBalance().compareTo(bid.getAmount()) < 0) {
+      sender.sendMessage(new MessageEnvelop(MessageType.ERROR, "Số dư không đủ để đặt giá này!"));
+      return;
+    }
+
     auctionRoom.setCurrentPrice(bid.getAmount());
     auctionRoom.setCurrentWinnerId(bid.getBidderId());
 
@@ -52,6 +57,8 @@ public class AuctionService {
     PlaceBidResponse response = BidMapper.toDTO(bid, "Success");
     MessageEnvelop broadcastMsg = new MessageEnvelop(MessageType.BID_BROADCAST, JsonConverter.toJson(response));
     auctionRoom.broadcast(broadcastMsg);
+
+    itemDao.updateCurrentPriceAndWinner(bid.getItemId(),bid.getAmount(),bid.getBidderId());
 
     Item currentItem = itemDao.findById(bid.getItemId());
     currentItem.addBid(bid);

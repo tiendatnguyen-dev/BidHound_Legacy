@@ -24,6 +24,8 @@ public class RoomService {
 
     if (currentRoom.getRemainingSeconds() == 0 && !currentRoom.isClosed()) {
       if (item.getEndTime() != null) {
+        currentRoom.setCurrentPrice(item.getCurrentPrice());
+        currentRoom.setCurrentWinnerId(item.getWinnerId());
         int remaining = (int) LocalDateTime.now().until(item.getEndTime(), ChronoUnit.SECONDS);
         currentRoom.startAuction(Math.max(remaining, 0));
       }

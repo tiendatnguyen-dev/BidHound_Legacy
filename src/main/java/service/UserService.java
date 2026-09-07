@@ -6,9 +6,12 @@ import dto.entities.User;
 
 public class UserService {
   UserDao userDao = new UserDaoImpl();
-  public boolean authenticateUser(Long userId, String username) {
+  public User authenticateUser(Long userId, String username) {
     User currentUser = userDao.findUserById(userId);
-    return currentUser.getUsername().equals(username);
+    if (currentUser != null && currentUser.getUsername().equals(username)) {
+      return currentUser;
+    }
+    return null;
   }
 
   public boolean registerUser(String username) {

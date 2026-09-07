@@ -12,4 +12,6 @@ public interface ItemDao {
   void updateStatus(Long itemId, String status);
   void updateEndTime(Long itemId, LocalDateTime newEndTime);
   List<Item> getActiveItemsList();
+  Item saveItem(Item item);
+  List<Item> getAuctionHistoryByUserId(Long userId);
 }

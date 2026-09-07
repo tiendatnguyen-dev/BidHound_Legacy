@@ -17,4 +17,13 @@ public class ItemService {
   public Item getDetail(Long itemId) {
     return itemDao.findById(itemId);
   }
+
+  public Item createItem(Item item) {
+    itemDao.saveItem(item);
+    return item;
+  }
+
+  public List<Item> getUserAuctionHistory(Long userId) {
+    return itemDao.getAuctionHistoryByUserId(userId);
+  }
 }

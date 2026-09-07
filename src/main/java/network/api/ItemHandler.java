@@ -8,6 +8,8 @@ import dto.util.JsonConverter;
 import service.ItemService;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class ItemHandler implements HttpHandler {
@@ -26,6 +28,17 @@ public class ItemHandler implements HttpHandler {
                 Long convertedId = Long.parseLong(itemId);
                 handleGetDetail(exchange, convertedId);
 
+            }
+        } else if ("POST".equals(exchange.getRequestMethod())) {
+            String path = exchange.getRequestURI().getPath();
+            InputStream is = exchange.getRequestBody();
+            String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            Item item = JsonConverter.fromJson(json, Item.class);
+            String[] parts = path.split("/");
+            if (parts.length == 3) {
+                itemService.createItem(item);
+                String response = JsonConverter.toJson(item);
+                HttpUtils.sendResponse(exchange,200, response);
             }
         } else {
             HttpUtils.sendResponse(exchange, 404, "{\"status\":\"ERROR\", \"message\":\"Not Found\"}");

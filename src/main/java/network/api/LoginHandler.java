@@ -22,9 +22,10 @@ public class LoginHandler implements HttpHandler {
       String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
       User user = JsonConverter.fromJson(json, User.class);
 
-      if (userService.authenticateUser(user.getId(), user.getUsername())) {
-        String responseText = "{\"status\":\"SUCCESS\", \"message\":\"Login successfully!\"}";
-        HttpUtils.sendResponse(exchange,200, responseText);
+      User authenticatedUser = userService.authenticateUser(user.getId(), user.getUsername());
+      if (authenticatedUser != null) {
+        String userJson = JsonConverter.toJson(authenticatedUser);
+        HttpUtils.sendResponse(exchange,200, userJson);
       } else {
         String errorJson = "{\"status\":\"ERROR\", \"message\":\"Sai tên đăng nhập hoặc mật khẩu!\"}";
         HttpUtils.sendResponse(exchange, 401, errorJson);

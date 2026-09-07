@@ -15,6 +15,7 @@ public class RestServer {
       httpServer.createContext("/api/auth/login",new LoginHandler());
       httpServer.createContext("/api/auth/register", new RegisterHandler());
       httpServer.createContext("/api/items", new ItemHandler());
+      httpServer.createContext("/api/users", new UserHandler());
 
       System.out.println("REST API Server đang chạy tại port 8080...");
     } catch (IOException e) {

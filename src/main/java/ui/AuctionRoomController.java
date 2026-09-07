@@ -2,7 +2,6 @@ package ui;
 
 import dto.entities.Bid;
 import dto.entities.Item;
-import dto.mapper.BidMapper;
 import dto.mapper.PlaceBidRequest;
 import dto.mapper.PlaceBidResponse;
 import dto.util.AlertBox;
@@ -18,8 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import network.ClientSide;
-import network.NetworkMessageListener;
+import network.socket.ClientSide;
+import network.socket.NetworkMessageListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

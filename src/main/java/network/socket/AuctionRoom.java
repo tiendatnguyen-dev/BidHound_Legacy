@@ -1,4 +1,4 @@
-package network;
+package network.socket;
 
 import dto.mapper.PlaceBidRequest;
 import dto.util.MessageEnvelop;

@@ -1,4 +1,4 @@
-package network;
+package network.socket;
 
 import java.util.concurrent.ConcurrentHashMap;
 

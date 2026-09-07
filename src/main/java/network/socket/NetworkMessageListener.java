@@ -1,4 +1,4 @@
-package network;
+package network.socket;
 
 import dto.util.MessageEnvelop;
 

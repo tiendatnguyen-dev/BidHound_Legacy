@@ -6,9 +6,9 @@ import dto.entities.Item;
 import dto.util.JsonConverter;
 import dto.util.MessageEnvelop;
 import dto.util.MessageType;
-import network.AuctionRoom;
-import network.ClientHandler;
-import network.ClientManager;
+import network.socket.AuctionRoom;
+import network.socket.ClientHandler;
+import network.socket.ClientManager;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

@@ -7,8 +7,11 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDaoImpl implements ItemDao{
   private final BidDao bidDao = new BidDaoImpl();
@@ -84,5 +87,40 @@ public class ItemDaoImpl implements ItemDao{
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public List<Item> getActiveItemsList() {
+    String sql = "SELECT id,title,seller_id,winner_id,current_price,status,end_time FROM items WHERE status = ?";
+    List<Item> items = new ArrayList<Item>();
+    try (Connection conn = DatabaseConnection.getInstance().getConnection();
+         PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
+      preparedStatement.setString(1, "ACTIVE");
+      ResultSet rs = preparedStatement.executeQuery();
+      while (rs.next()) {
+        Item item = new Item();
+        Long itemId = rs.getLong("id");
+        String title = rs.getString("title");
+        Long sellerId = rs.getLong("seller_id");
+        Long winnerId = rs.getLong("winner_id");
+        BigDecimal currPrice = rs.getBigDecimal("current_price");
+        String status = rs.getString("status");
+        LocalDateTime endTime = rs.getTimestamp("end_time").toLocalDateTime();
+        item.setId(itemId);
+        item.setTitle(title);
+        item.setSellerId(sellerId);
+        item.setWinnerId(winnerId);
+        item.setCurrentPrice(currPrice);
+        item.setStatus(status);
+        item.setEndTime(endTime);
+        for (Bid bid : bidDao.findByItemId(itemId)) {
+          item.addBid(bid);
+        }
+        items.add(item);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return items;
   }
 }

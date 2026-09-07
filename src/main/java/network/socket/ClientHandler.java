@@ -1,6 +1,5 @@
-package network;
+package network.socket;
 
-import dto.entities.Item;
 import dto.mapper.PlaceBidRequest;
 import dto.util.JsonConverter;
 import dto.util.MessageEnvelop;

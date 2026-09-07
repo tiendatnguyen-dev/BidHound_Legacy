@@ -16,8 +16,8 @@ import dto.mapper.PlaceBidResponse;
 import dto.util.JsonConverter;
 import dto.util.MessageEnvelop;
 import dto.util.MessageType;
-import network.AuctionRoom;
-import network.ClientHandler;
+import network.socket.AuctionRoom;
+import network.socket.ClientHandler;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

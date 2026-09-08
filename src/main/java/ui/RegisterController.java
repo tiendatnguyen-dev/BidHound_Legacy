@@ -7,10 +7,8 @@ import dto.util.JsonConverter;
 import dto.util.SceneManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class RegisterController {

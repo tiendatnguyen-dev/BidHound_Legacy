@@ -1,10 +1,8 @@
 package service;
 
-import com.sun.net.httpserver.HttpExchange;
 import dao.ItemDao;
 import dao.ItemDaoImpl;
 import dto.entities.Item;
-import dto.util.HttpUtils;
 
 import java.util.List;
 

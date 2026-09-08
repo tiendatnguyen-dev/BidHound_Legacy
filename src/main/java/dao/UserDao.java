@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface UserDao {
   User findUserById(Long userId);
+  User findUserByUsername(String username);
   boolean updateUserBalance(Long userId, BigDecimal newBalance);
+  User createUser(User user);
 }

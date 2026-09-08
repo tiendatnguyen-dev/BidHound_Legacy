@@ -19,13 +19,13 @@ public class RegisterHandler implements HttpHandler {
       InputStream is = exchange.getRequestBody();
       String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
       User user = JsonConverter.fromJson(json, User.class);
-      if (userService.registerUser(user.getUsername())) {
-        HttpUtils.sendResponse(exchange,201,
-                "{\"status\":\"SUCCESS\", \"message\":\"Tạo tài khoản thành công!\"}");
+      User newUser = userService.registerUser(user);
+      if (newUser != null) {
+        HttpUtils.sendResponse(exchange, 201, JsonConverter.toJson(newUser));
       } else {
-        HttpUtils.sendResponse(exchange,400,
-                "{\"status\":\"ERROR\", \"message\":\"Tài khoản đã tồn tại!\"}");
+        HttpUtils.sendResponse(exchange, 400, "{\"status\":\"ERROR\", \"message\":\"Tài khoản đã tồn tại!\"}");
       }
+
 
     } else {
       HttpUtils.sendResponse(exchange, 405, "{\"status\":\"ERROR\", \"message\":\"Method Not Allowed\"}");

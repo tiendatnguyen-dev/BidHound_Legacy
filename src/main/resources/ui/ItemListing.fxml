@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ui.ItemListingController"
+            stylesheets="@style.css"
+            prefWidth="900" prefHeight="650"
+            style="-fx-background-color: #070d1a;">
+    
+    <!-- TOP HEADER -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="card" style="-fx-padding: 15px 25px; -fx-background-radius: 0 0 16px 16px;">
+            <Label text="⚡ BIDHOUND LOBBY" styleClass="title-label"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <VBox alignment="CENTER_RIGHT">
+                <Label fx:id="userLabel" text="User: Guest" styleClass="sub-label" style="-fx-font-weight: bold;"/>
+                <Label fx:id="balanceLabel" text="Số dư: 0 ₫" style="-fx-text-fill: #f59e0b; -fx-font-weight: bold;"/>
+            </VBox>
+            <Button text="👤 Trang Cá Nhân" onAction="#handleOpenProfile" styleClass="btn-quick"/>
+            <Button text="🚪 Đăng Xuất" onAction="#handleLogout" styleClass="btn-quick" style="-fx-text-fill: #ef4444; -fx-border-color: rgba(239,68,68,0.3);"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER CONTENT: ITEMS LIST -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20px;">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="DANH SÁCH SẢN PHẨM ĐANG ĐẤU GIÁ" styleClass="title-label" style="-fx-font-size: 18px;"/>
+                <Button text="🔄 Làm mới" onAction="#loadItems" styleClass="btn-quick"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" styleClass="list-view" VBox.vgrow="ALWAYS">
+                <FlowPane fx:id="itemsFlowPane" hgap="20" vgap="20" style="-fx-background-color: transparent;">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                </FlowPane>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+    <!-- BOTTOM FORM: CREATE NEW ITEM -->
+    <bottom>
+        <VBox styleClass="card" style="-fx-padding: 15px 25px; -fx-background-radius: 16px 16px 0 0;" spacing="10">
+            <Label text="➕ ĐĂNG SẢN PHẨM ĐẤU GIÁ MỚI" styleClass="sub-label" style="-fx-font-weight: bold; -fx-text-fill: #f1f5f9;"/>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <TextField fx:id="newItemTitleField" promptText="Tên sản phẩm..." HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="newItemPriceField" promptText="Giá khởi điểm (VNĐ)..." prefWidth="180"/>
+                <TextField fx:id="newItemDurationField" promptText="Thời gian (phút)..." prefWidth="140"/>
+                <Button text="Đăng Sản Phẩm" onAction="#handleCreateItem" styleClass="btn-primary"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

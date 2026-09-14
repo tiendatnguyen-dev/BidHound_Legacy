@@ -1,14 +1,14 @@
 package ui;
 
-import dto.entities.Bid;
-import dto.entities.Item;
-import dto.mapper.PlaceBidRequest;
-import dto.mapper.PlaceBidResponse;
-import dto.util.AlertBox;
-import dto.util.JsonConverter;
-import dto.util.MessageEnvelop;
-import dto.util.MessageType;
-import dto.util.TimeCounter;
+import com.dto.entities.Bid;
+import com.dto.entities.Item;
+import com.dto.mapper.PlaceBidRequest;
+import com.dto.mapper.PlaceBidResponse;
+import com.dto.util.AlertBox;
+import com.dto.util.JsonConverter;
+import com.dto.util.MessageEnvelop;
+import com.dto.util.MessageType;
+import com.dto.util.TimeCounter;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,8 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import network.socket.ClientSide;
-import network.socket.NetworkMessageListener;
+import com.network.socket.ClientSide;
+import com.network.socket.NetworkMessageListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

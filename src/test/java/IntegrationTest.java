@@ -1,7 +1,7 @@
-import dto.util.JsonConverter;
-import dto.util.MessageEnvelop;
-import dto.util.MessageType;
-import dto.mapper.PlaceBidRequest;
+import com.dto.util.JsonConverter;
+import com.dto.util.MessageEnvelop;
+import com.dto.util.MessageType;
+import com.dto.mapper.PlaceBidRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

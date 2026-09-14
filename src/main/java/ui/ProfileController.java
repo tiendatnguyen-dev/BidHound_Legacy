@@ -1,10 +1,10 @@
 package ui;
 
-import dto.entities.Item;
-import dto.entities.User;
-import dto.util.AlertBox;
-import dto.util.SceneManager;
-import dto.util.UserSession;
+import com.dto.entities.Item;
+import com.dto.entities.User;
+import com.dto.util.AlertBox;
+import com.dto.util.SceneManager;
+import com.dto.util.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -13,8 +13,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import service.ItemService;
-import service.UserService;
+import com.service.ItemService;
+import com.service.UserService;
 
 import java.math.BigDecimal;
 import java.util.List;

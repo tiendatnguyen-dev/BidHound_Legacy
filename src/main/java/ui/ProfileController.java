@@ -33,8 +33,8 @@ public class ProfileController {
     @FXML private TableColumn<Item, String> statusCol;
     @FXML private TableColumn<Item, Long>   resultCol;
 
-    ItemService itemService = new ItemService();
-    UserService userService = new UserService();
+    ItemService itemService;
+    UserService userService;
     User user = UserSession.getInstance().getCurrentUser();
 
     @FXML

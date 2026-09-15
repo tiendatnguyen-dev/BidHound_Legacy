@@ -1,9 +1,5 @@
 package com.service;
 
-import com.dao.BidDaoImpl;
-import com.dao.DatabaseConnection;
-import com.dao.ItemDao;
-import com.dao.ItemDaoImpl;
 import com.dto.entities.Item;
 import com.dto.util.JsonConverter;
 import com.dto.util.MessageEnvelop;
@@ -11,6 +7,7 @@ import com.dto.util.MessageType;
 import com.network.socket.AuctionRoom;
 import com.network.socket.ClientHandler;
 import com.network.socket.ClientManager;
+import com.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,14 +15,9 @@ import java.time.temporal.ChronoUnit;
 
 @Service
 public class RoomService {
-  private final ItemDao itemDao;
+  private final ItemRepository itemDao;
 
-  public RoomService() {
-    DatabaseConnection db = new DatabaseConnection();
-    this.itemDao = new ItemDaoImpl(new BidDaoImpl(db), db);
-  }
-
-  public RoomService(ItemDao itemDao) {
+  public RoomService(ItemRepository itemDao) {
     this.itemDao = itemDao;
   }
 
@@ -33,7 +25,7 @@ public class RoomService {
     Long itemId = Long.parseLong(message.payload());
     AuctionRoom currentRoom = ClientManager.getInstance().getOrCreateRoom(itemId);
     currentRoom.addClient(client);
-    Item item = itemDao.findById(itemId);
+    Item item = itemDao.findById(itemId).orElse(null);
 
     if (currentRoom.getRemainingSeconds() == 0 && !currentRoom.isClosed()) {
       if (item.getEndTime() != null) {

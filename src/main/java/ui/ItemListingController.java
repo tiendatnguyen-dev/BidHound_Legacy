@@ -28,7 +28,7 @@ public class ItemListingController {
     @FXML private TextField newItemPriceField;
     @FXML private TextField newItemDurationField;
 
-    ItemService itemService = new ItemService();
+    ItemService itemService;
 
     @FXML
     public void initialize() {

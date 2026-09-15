@@ -38,5 +38,6 @@ build/
 ### Mac OS ###
 .DS_Store
 
-src/main/resources/db.properties
+src/main/resources/application.properties
 src/main/java/test
+src/main/java/com/BiddingApplication.java

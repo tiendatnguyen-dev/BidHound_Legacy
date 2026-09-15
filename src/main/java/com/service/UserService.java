@@ -1,43 +1,42 @@
 package com.service;
 
-import com.dao.DatabaseConnection;
-import com.dao.UserDao;
-import com.dao.UserDaoImpl;
 import com.dto.entities.User;
+import com.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
 @Service
 public class UserService {
-  private final UserDao userDao;
+  private final UserRepository userDao;
 
-  public UserService() {
-    this(new UserDaoImpl(new DatabaseConnection()));
-  }
-
-  public UserService(UserDao userDao) {
+  public UserService(UserRepository userDao) {
     this.userDao = userDao;
   }
 
   public User authenticateUser(Long userId, String username) {
-    User currentUser = userDao.findUserById(userId);
+    User currentUser = userDao.findById(userId).orElse(null);
     if (currentUser != null && currentUser.getUsername().equals(username)) {
       return currentUser;
     }
     return null;
   }
 
+  @Transactional
   public User registerUser(User user) {
-    if (userDao.findUserByUsername(user.getUsername()) != null) {
+    if (userDao.findByUsername(user.getUsername()).isPresent()) {
       return null;
     }
     else {
-      return userDao.createUser(user);
+      return userDao.save(user);
     }
   }
 
+  @Transactional
   public void topUpBalance(User user, BigDecimal newBalance) {
-    userDao.updateUserBalance(user.getId(),newBalance.add(user.getBalance()));
+    userDao.findById(user.getId()).ifPresent(userdb -> { userdb.setBalance(userdb.getBalance().add(newBalance));
+    });
   }
+
 }

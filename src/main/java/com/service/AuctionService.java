@@ -1,15 +1,6 @@
 package com.service;
 
-import com.dao.DatabaseConnection;
 import com.dto.entities.User;
-import com.dao.BidDao;
-import com.dao.BidDaoImpl;
-import com.dao.ItemDao;
-import com.dao.ItemDaoImpl;
-import com.dao.TransactionDao;
-import com.dao.TransactionDaoImpl;
-import com.dao.UserDao;
-import com.dao.UserDaoImpl;
 import com.dto.entities.Bid;
 import com.dto.entities.Item;
 import com.dto.mapper.BidMapper;
@@ -20,38 +11,26 @@ import com.dto.util.MessageEnvelop;
 import com.dto.util.MessageType;
 import com.network.socket.AuctionRoom;
 import com.network.socket.ClientHandler;
+import com.repository.BidRepository;
+import com.repository.ItemRepository;
+import com.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuctionService {
-  private final ItemDao itemDao;
-  private final BidDao bidDao;
-  private final UserDao userDao;
-  private final TransactionDao transactionDao;
+  private final ItemRepository itemDao;
+  private final BidRepository bidDao;
+  private final UserRepository userDao;
 
-  public AuctionService() {
-    DatabaseConnection db = new DatabaseConnection();
-    this.itemDao = new ItemDaoImpl(new BidDaoImpl(db), db);
-    this.bidDao = new BidDaoImpl(db);
-    this.userDao = new UserDaoImpl(db);
-    this.transactionDao = new TransactionDaoImpl(db);
-  }
-
-  public AuctionService(ItemDao itemDao, BidDao bidDao,
-                        UserDao userDao, TransactionDao transactionDao) {
+  public AuctionService(ItemRepository itemDao, BidRepository bidDao,
+                        UserRepository userDao) {
     this.itemDao = itemDao;
     this.bidDao = bidDao;
     this.userDao = userDao;
-    this.transactionDao = transactionDao;
   }
 
-  public void finalizeAuction(Long itemId, Long winnerId, BigDecimal finalPrice) {
-    transactionDao.finalizeAuction(itemId, winnerId, finalPrice);
-  }
-
+  @Transactional
   public void processBid(AuctionRoom auctionRoom, ClientHandler sender, PlaceBidRequest placeBidRequest) {
     if (auctionRoom.isClosed()) {
       sender.sendMessage(new MessageEnvelop(MessageType.ERROR, "The auction is closed!"));
@@ -63,7 +42,7 @@ public class AuctionService {
       return;
     }
 
-    User bidder = userDao.findUserById(placeBidRequest.bidderId());
+    User bidder = userDao.findById(placeBidRequest.bidderId()).orElse(null);
     if (bidder == null || bidder.getBalance() == null || bidder.getBalance().compareTo(bid.getAmount()) < 0) {
       sender.sendMessage(new MessageEnvelop(MessageType.ERROR, "Số dư không đủ để đặt giá này!"));
       return;
@@ -73,24 +52,25 @@ public class AuctionService {
     auctionRoom.setCurrentWinnerId(bid.getBidderId());
 
     bidDao.save(bid);
+    userDao.deductBalance(bidder.getId(), bid.getAmount());
 
     PlaceBidResponse response = BidMapper.toDTO(bid, "Success");
     MessageEnvelop broadcastMsg = new MessageEnvelop(MessageType.BID_BROADCAST, JsonConverter.toJson(response));
     auctionRoom.broadcast(broadcastMsg);
 
-    itemDao.updateCurrentPriceAndWinner(bid.getItemId(),bid.getAmount(),bid.getBidderId());
-
-    Item currentItem = itemDao.findById(bid.getItemId());
-    currentItem.addBid(bid);
-
-    if (auctionRoom.getRemainingSeconds() <= 10) {
-      auctionRoom.extendTime(15);
-      MessageEnvelop extendMsg = new MessageEnvelop(
-              MessageType.TIMER_EXTEND,
-              "Hệ thống tự động gia hạn thêm 15 giây do có người đặt giá ở giây cuối!"
-      );
-      auctionRoom.broadcast(extendMsg);
-      itemDao.updateEndTime(currentItem.getId(), LocalDateTime.now().plusSeconds(15));
+    Item currentItem = itemDao.findById(bid.getItemId()).orElse(null);
+    if (currentItem != null) {
+      currentItem.setCurrentPrice(bid.getAmount());
+      currentItem.setWinnerId(bid.getBidderId());
+      currentItem.addBid(bid);
+      if (auctionRoom.getRemainingSeconds() <= 10) {
+        auctionRoom.extendTime(15);
+        MessageEnvelop extendMsg = new MessageEnvelop(
+                MessageType.TIMER_EXTEND,
+                "Hệ thống tự động gia hạn thêm 15 giây do có người đặt giá ở giây cuối!"
+        );
+        auctionRoom.broadcast(extendMsg);
+      }
     }
   }
 }

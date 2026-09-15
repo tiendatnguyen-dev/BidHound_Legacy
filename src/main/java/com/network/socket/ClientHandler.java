@@ -16,7 +16,7 @@ public class ClientHandler implements Runnable {
   private final Socket socket;
   private PrintWriter printWriter;
   private AuctionRoom currentRoom;
-  private RoomService roomService = new RoomService();
+  private RoomService roomService;
 
   public ClientHandler(Socket socket) {
     this.socket = socket;

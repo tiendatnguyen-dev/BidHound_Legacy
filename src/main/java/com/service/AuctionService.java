@@ -36,20 +36,27 @@ public class AuctionService {
       sender.sendMessage(new MessageEnvelop(MessageType.ERROR, "The auction is closed!"));
       return;
     }
-    Bid bid = BidMapper.toEntity(placeBidRequest);
+
+    User bidder = userDao.findById(placeBidRequest.bidderId()).orElse(null);
+    Item currentItem = itemDao.findById(placeBidRequest.itemId()).orElse(null);
+    if (currentItem == null || bidder == null) {
+      sender.sendMessage(new MessageEnvelop(MessageType.ERROR, "Đã phát sinh lỗi với lệnh đặt."));
+      return;
+    }
+    Bid bid = BidMapper.toEntity(placeBidRequest, currentItem, bidder);
+
     if (bid.getAmount().compareTo(auctionRoom.getCurrentPrice()) <= 0) {
       sender.sendMessage(new MessageEnvelop(MessageType.ERROR, "Bid phải lớn hơn giá đặt hiện tại!"));
       return;
     }
 
-    User bidder = userDao.findById(placeBidRequest.bidderId()).orElse(null);
     if (bidder == null || bidder.getBalance() == null || bidder.getBalance().compareTo(bid.getAmount()) < 0) {
       sender.sendMessage(new MessageEnvelop(MessageType.ERROR, "Số dư không đủ để đặt giá này!"));
       return;
     }
 
     auctionRoom.setCurrentPrice(bid.getAmount());
-    auctionRoom.setCurrentWinnerId(bid.getBidderId());
+    auctionRoom.setCurrentWinnerId(bid.getUser().getId());
 
     bidDao.save(bid);
     userDao.deductBalance(bidder.getId(), bid.getAmount());
@@ -58,20 +65,18 @@ public class AuctionService {
     MessageEnvelop broadcastMsg = new MessageEnvelop(MessageType.BID_BROADCAST, JsonConverter.toJson(response));
     auctionRoom.broadcast(broadcastMsg);
 
-    Item currentItem = itemDao.findById(bid.getItemId()).orElse(null);
-    if (currentItem != null) {
-      currentItem.setCurrentPrice(bid.getAmount());
-      currentItem.setWinnerId(bid.getBidderId());
-      currentItem.addBid(bid);
-      if (auctionRoom.getRemainingSeconds() <= 10) {
-        auctionRoom.extendTime(15);
-        MessageEnvelop extendMsg = new MessageEnvelop(
-                MessageType.TIMER_EXTEND,
-                "Hệ thống tự động gia hạn thêm 15 giây do có người đặt giá ở giây cuối!"
-        );
-        auctionRoom.broadcast(extendMsg);
-      }
+    currentItem.setCurrentPrice(bid.getAmount());
+    currentItem.setWinner(bidder);
+    currentItem.addBid(bid);
+    if (auctionRoom.getRemainingSeconds() <= 10) {
+      auctionRoom.extendTime(15);
+      MessageEnvelop extendMsg = new MessageEnvelop(
+              MessageType.TIMER_EXTEND,
+              "Hệ thống tự động gia hạn thêm 15 giây do có người đặt giá ở giây cuối!"
+      );
+      auctionRoom.broadcast(extendMsg);
     }
   }
 }
+
 

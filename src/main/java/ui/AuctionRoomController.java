@@ -117,9 +117,9 @@ public class AuctionRoomController implements NetworkMessageListener {
           Item item = JsonConverter.fromJson(envelope.payload(), Item.class);
 
           itemTitleLabel.setText(item.getTitle());
-          itemDetailLabel.setText("Mã sản phẩm: " + item.getId() + " | " + "Người bán: " + item.getSellerId());
+          itemDetailLabel.setText("Mã sản phẩm: " + item.getId() + " | " + "Người bán: " + item.getSeller().getId());
           currentPriceLabel.setText(item.getCurrentPrice() != null ? item.getCurrentPrice().toString() : "0");
-          currentWinnerLabel.setText(item.getWinnerId() != null ? item.getWinnerId().toString() : "Chưa có");
+          currentWinnerLabel.setText(item.getWinner().getId() != null ? item.getWinner().getId().toString() : "Chưa có");
 
           int remainingSeconds = 0;
           if (item.getEndTime() != null) {
@@ -130,8 +130,8 @@ public class AuctionRoomController implements NetworkMessageListener {
 
           for (Bid bid : item.getBidHistory()) {
             PlaceBidResponse bidResponse = new PlaceBidResponse(
-                    bid.getId(), bid.getItemId(), bid.getAmount(),
-                    bid.getBidderId(), bid.getCreatedAt(), "History"
+                    bid.getId(), bid.getItem().getId(), bid.getAmount(),
+                    bid.getUser().getId(), bid.getCreatedAt(), "History"
             );
             bidHistoryListView.getItems().add(bidResponse);
           }

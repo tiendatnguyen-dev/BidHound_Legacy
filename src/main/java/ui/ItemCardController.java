@@ -1,6 +1,7 @@
 package ui;
 
 import com.dto.entities.Item;
+import com.dto.util.AuctionStatus;
 import com.dto.util.TimeCounter;
 import com.dto.util.UserSession;
 import com.dto.util.SceneManager;
@@ -37,7 +38,7 @@ public class ItemCardController {
     durationLabel.setText(TimeCounter.timeFormatter(remainingSeconds));
 
     // Ẩn nút nếu phiên đã kết thúc
-    if (remainingSeconds <= 0 || "ENDED".equals(item.getStatus())) {
+    if (remainingSeconds <= 0 || AuctionStatus.ENDED.equals(item.getAuctionStatus())) {
       actionButton.setText("Đã kết thúc");
       actionButton.setDisable(true);
       actionButton.setStyle("-fx-background-color: #94a3b8; -fx-text-fill: white; "

@@ -1,6 +1,7 @@
 package com.repository;
 
 import com.dto.entities.Item;
+import com.dto.util.AuctionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,8 +11,8 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-  @Query("SELECT DISTINCT i FROM Item i, Bid b WHERE i.id = b.itemId AND b.bidderId = :userId")
+  @Query("SELECT DISTINCT i FROM Item i JOIN i.bidHistory b WHERE b.user.id = :userId")
   List<Item> findAuctionHistoryByUserId(@Param("userId") Long userId);
 
-  List<Item> findByStatus(String status);
+  List<Item> findByAuctionStatus(AuctionStatus status);
 }

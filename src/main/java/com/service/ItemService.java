@@ -1,6 +1,7 @@
 package com.service;
 
 import com.dto.entities.Item;
+import com.dto.util.AuctionStatus;
 import com.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class ItemService {
   }
 
   public List<Item> getList() {
-    return itemDao.findByStatus("ACTIVE");
+    return itemDao.findByAuctionStatus(AuctionStatus.ACTIVE);
   }
 
   public Item getDetail(Long itemId) {

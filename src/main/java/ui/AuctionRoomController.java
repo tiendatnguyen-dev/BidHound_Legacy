@@ -1,14 +1,14 @@
 package ui;
 
-import dto.entities.Bid;
-import dto.entities.Item;
-import dto.mapper.PlaceBidRequest;
-import dto.mapper.PlaceBidResponse;
-import dto.util.AlertBox;
-import dto.util.JsonConverter;
-import dto.util.MessageEnvelop;
-import dto.util.MessageType;
-import dto.util.TimeCounter;
+import com.dto.entities.Bid;
+import com.dto.entities.Item;
+import com.dto.mapper.PlaceBidRequest;
+import com.dto.mapper.PlaceBidResponse;
+import com.dto.util.AlertBox;
+import com.dto.util.JsonConverter;
+import com.dto.util.MessageEnvelop;
+import com.dto.util.MessageType;
+import com.dto.util.TimeCounter;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,8 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import network.socket.ClientSide;
-import network.socket.NetworkMessageListener;
+import com.network.socket.ClientSide;
+import com.network.socket.NetworkMessageListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -117,9 +117,9 @@ public class AuctionRoomController implements NetworkMessageListener {
           Item item = JsonConverter.fromJson(envelope.payload(), Item.class);
 
           itemTitleLabel.setText(item.getTitle());
-          itemDetailLabel.setText("Mã sản phẩm: " + item.getId() + " | " + "Người bán: " + item.getSellerId());
+          itemDetailLabel.setText("Mã sản phẩm: " + item.getId() + " | " + "Người bán: " + item.getSeller().getId());
           currentPriceLabel.setText(item.getCurrentPrice() != null ? item.getCurrentPrice().toString() : "0");
-          currentWinnerLabel.setText(item.getWinnerId() != null ? item.getWinnerId().toString() : "Chưa có");
+          currentWinnerLabel.setText(item.getWinner().getId() != null ? item.getWinner().getId().toString() : "Chưa có");
 
           int remainingSeconds = 0;
           if (item.getEndTime() != null) {
@@ -130,8 +130,8 @@ public class AuctionRoomController implements NetworkMessageListener {
 
           for (Bid bid : item.getBidHistory()) {
             PlaceBidResponse bidResponse = new PlaceBidResponse(
-                    bid.getId(), bid.getItemId(), bid.getAmount(),
-                    bid.getBidderId(), bid.getCreatedAt(), "History"
+                    bid.getId(), bid.getItem().getId(), bid.getAmount(),
+                    bid.getUser().getId(), bid.getCreatedAt(), "History"
             );
             bidHistoryListView.getItems().add(bidResponse);
           }

@@ -1,0 +1,37 @@
+package com.network.api;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.dto.entities.User;
+import com.dto.util.HttpUtils;
+import com.dto.util.JsonConverter;
+import com.service.UserService;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+public class LoginHandler implements HttpHandler {
+  UserService userService = new UserService();
+  @Override
+  public void handle(HttpExchange exchange) throws IOException {
+    if ("POST".equals(exchange.getRequestMethod())) {
+      exchange.getResponseHeaders().set("Content-Type", "application/json");
+
+      InputStream is = exchange.getRequestBody();
+      String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+      User user = JsonConverter.fromJson(json, User.class);
+
+      User authenticatedUser = userService.authenticateUser(user.getId(), user.getUsername());
+      if (authenticatedUser != null) {
+        String userJson = JsonConverter.toJson(authenticatedUser);
+        HttpUtils.sendResponse(exchange,200, userJson);
+      } else {
+        String errorJson = "{\"status\":\"ERROR\", \"message\":\"Sai tên đăng nhập hoặc mật khẩu!\"}";
+        HttpUtils.sendResponse(exchange, 401, errorJson);
+      }
+    } else {
+      exchange.sendResponseHeaders(405,-1);
+    }
+  }
+}

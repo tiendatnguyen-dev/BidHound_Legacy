@@ -1,0 +1,77 @@
+package com.network.socket;
+
+import com.dto.mapper.PlaceBidRequest;
+import com.dto.util.JsonConverter;
+import com.dto.util.MessageEnvelop;
+import com.dto.util.MessageType;
+import com.service.RoomService;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+public class ClientHandler implements Runnable {
+  private final Socket socket;
+  private PrintWriter printWriter;
+  private AuctionRoom currentRoom;
+  private RoomService roomService;
+
+  public ClientHandler(Socket socket) {
+    this.socket = socket;
+  }
+
+  @Override
+  public void run() {
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+         PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+      this.printWriter = out;
+      String jsonLine;
+      while ((jsonLine = in.readLine()) != null) {
+        MessageEnvelop messageEnvelop = JsonConverter.fromJson(jsonLine, MessageEnvelop.class);
+
+        handleMessage(messageEnvelop);
+      }
+    } catch (IOException e) {
+      System.out.println("Client đã ngắt kết nối.");
+      if (this.currentRoom != null) {
+        this.currentRoom.removeClient(this);
+        this.currentRoom = null;
+      }
+    }
+  }
+
+  public void sendMessage(MessageEnvelop messageEnvelop) {
+    if (printWriter != null) {
+      String toJson = JsonConverter.toJson(messageEnvelop);
+      printWriter.println(toJson);
+    }
+  }
+
+  public void handleMessage(MessageEnvelop message) {
+    switch (message.type()) {
+      case JOIN_ROOM: {
+        this.currentRoom = roomService.handleJoinRoom(this, message);
+        break;
+      }
+      case LEAVE_ROOM: {
+        if (this.currentRoom != null) {
+          this.currentRoom.removeClient(this);
+          this.currentRoom = null;
+        }
+        break;
+      }
+      case PLACE_BID:
+        PlaceBidRequest bidRequest = JsonConverter.fromJson(message.payload(), PlaceBidRequest.class);
+
+        if (this.currentRoom != null) {
+          this.currentRoom.placeBid(this, bidRequest);
+          System.out.println("[NEW_BID]" + bidRequest.itemId() + ": " + bidRequest.amount() + " From " + bidRequest.bidderId());
+        } else {
+          sendMessage(new MessageEnvelop(MessageType.ERROR, "Bạn chưa tham gia phòng đấu giá nào!"));
+        }
+        break;
+    }
+  }
+}

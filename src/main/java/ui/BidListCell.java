@@ -1,9 +1,8 @@
 package ui;
 
-import dto.mapper.PlaceBidResponse;
+import com.dto.mapper.PlaceBidResponse;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;

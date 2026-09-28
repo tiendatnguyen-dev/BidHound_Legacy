@@ -1,10 +1,10 @@
 package ui;
 
-import dto.entities.Item;
-import dto.entities.User;
-import dto.util.AlertBox;
-import dto.util.SceneManager;
-import dto.util.UserSession;
+import com.dto.entities.Item;
+import com.dto.entities.User;
+import com.dto.util.AlertBox;
+import com.dto.util.SceneManager;
+import com.dto.util.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
-import service.ItemService;
+import com.service.ItemService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ public class ItemListingController {
     @FXML private TextField newItemPriceField;
     @FXML private TextField newItemDurationField;
 
-    ItemService itemService = new ItemService();
+    ItemService itemService;
 
     @FXML
     public void initialize() {

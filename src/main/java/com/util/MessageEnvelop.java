@@ -1,4 +1,4 @@
-package com.dto.util;
+package com.util;
 
 /**
  * Data class để gửi về ClientHandler, giúp phân loại và xử lí.

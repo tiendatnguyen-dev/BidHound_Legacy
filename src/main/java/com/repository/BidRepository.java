@@ -1,6 +1,6 @@
 package com.repository;
 
-import com.dto.entities.Bid;
+import com.entities.Bid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

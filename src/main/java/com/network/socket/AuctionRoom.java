@@ -1,8 +1,8 @@
 package com.network.socket;
 
-import com.dto.mapper.PlaceBidRequest;
-import com.dto.util.MessageEnvelop;
-import com.dto.util.MessageType;
+import com.dto.request.PlaceBidRequest;
+import com.util.MessageEnvelop;
+import com.util.MessageType;
 import com.service.AuctionService;
 
 import java.math.BigDecimal;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Quản lí 1 AuctionRoom phía Server, giúp gửi thông báo về phía Client.
+ * Quản lí 1 AuctionRoom phía Server, giúp chuyển PlaceBidRequest xuống tầng service.
  */
 public class AuctionRoom {
   private final Long itemId;

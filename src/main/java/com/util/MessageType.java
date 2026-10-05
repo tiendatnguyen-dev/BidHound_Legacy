@@ -1,4 +1,4 @@
-package com.dto.util;
+package com.util;
 
 /**
  * Phân loại message để xử lí trong ClientHandler.

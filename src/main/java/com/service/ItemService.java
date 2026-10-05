@@ -1,7 +1,8 @@
 package com.service;
 
-import com.dto.entities.Item;
-import com.dto.util.AuctionStatus;
+import com.dto.request.CreateItemRequest;
+import com.entities.Item;
+import com.util.AuctionStatus;
 import com.repository.ItemRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,9 @@ public class ItemService {
   }
 
   @Transactional
-  public Item createItem(Item item) {
+  public Item createItem(CreateItemRequest createItemRequest) {
+    Item item = new Item(createItemRequest.id(), createItemRequest.title(),
+            createItemRequest.currentPrice(),createItemRequest.winner(), createItemRequest.seller());
     return itemDao.save(item);
   }
 

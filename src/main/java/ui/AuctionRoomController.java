@@ -1,14 +1,14 @@
 package ui;
 
-import com.dto.entities.Bid;
-import com.dto.entities.Item;
-import com.dto.mapper.PlaceBidRequest;
-import com.dto.mapper.PlaceBidResponse;
-import com.dto.util.AlertBox;
-import com.dto.util.JsonConverter;
-import com.dto.util.MessageEnvelop;
-import com.dto.util.MessageType;
-import com.dto.util.TimeCounter;
+import com.entities.Bid;
+import com.entities.Item;
+import com.dto.request.PlaceBidRequest;
+import com.dto.response.PlaceBidResponse;
+import com.util.AlertBox;
+import com.util.JsonConverter;
+import com.util.MessageEnvelop;
+import com.util.MessageType;
+import com.util.TimeCounter;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

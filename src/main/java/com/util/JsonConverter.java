@@ -1,4 +1,4 @@
-package com.dto.util;
+package com.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,8 +1,10 @@
-package com.dto.mapper;
+package com.dto;
 
-import com.dto.entities.Bid;
-import com.dto.entities.Item;
-import com.dto.entities.User;
+import com.dto.request.PlaceBidRequest;
+import com.dto.response.PlaceBidResponse;
+import com.entities.Bid;
+import com.entities.Item;
+import com.entities.User;
 
 import java.time.LocalDateTime;
 

@@ -1,9 +1,9 @@
 package com.service;
 
-import com.dto.entities.Item;
-import com.dto.util.JsonConverter;
-import com.dto.util.MessageEnvelop;
-import com.dto.util.MessageType;
+import com.entities.Item;
+import com.util.JsonConverter;
+import com.util.MessageEnvelop;
+import com.util.MessageType;
 import com.network.socket.AuctionRoom;
 import com.network.socket.ClientHandler;
 import com.network.socket.ClientManager;

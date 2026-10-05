@@ -1,10 +1,10 @@
 package ui;
 
-import com.dto.entities.Item;
-import com.dto.util.AuctionStatus;
-import com.dto.util.TimeCounter;
-import com.dto.util.UserSession;
-import com.dto.util.SceneManager;
+import com.entities.Item;
+import com.util.AuctionStatus;
+import com.util.TimeCounter;
+import com.util.UserSession;
+import com.util.SceneManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

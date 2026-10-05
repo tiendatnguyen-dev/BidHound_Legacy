@@ -1,4 +1,4 @@
-package com.dto.util;
+package com.util;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

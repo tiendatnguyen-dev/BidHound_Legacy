@@ -1,6 +1,6 @@
 package com.network.socket;
 
-import com.dto.util.MessageEnvelop;
+import com.util.MessageEnvelop;
 
 /**
  * Chịu trách nhiệm update UI cho người dùng (ClientSide).

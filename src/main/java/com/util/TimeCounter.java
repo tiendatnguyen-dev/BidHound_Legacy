@@ -1,4 +1,4 @@
-package com.dto.util;
+package com.util;
 
 /**
  * Time format cho AuctionRoomController, định dạng hiện tại: HH:MM:SS.

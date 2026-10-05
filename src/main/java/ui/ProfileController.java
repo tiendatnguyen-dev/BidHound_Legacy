@@ -1,10 +1,10 @@
 package ui;
 
-import com.dto.entities.Item;
-import com.dto.entities.User;
-import com.dto.util.AlertBox;
-import com.dto.util.SceneManager;
-import com.dto.util.UserSession;
+import com.entities.Item;
+import com.entities.User;
+import com.util.AlertBox;
+import com.util.SceneManager;
+import com.util.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

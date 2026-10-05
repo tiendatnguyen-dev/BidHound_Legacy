@@ -1,6 +1,6 @@
 package com.service;
 
-import com.dto.entities.User;
+import com.entities.User;
 import com.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -24,11 +24,13 @@ public class UserService {
   }
 
   @Transactional
-  public User registerUser(User user) {
-    if (userDao.findByUsername(user.getUsername()).isPresent()) {
+  public User registerUser(String username) {
+    if (userDao.findByUsername(username).isPresent()) {
       return null;
     }
     else {
+      User user = new User();
+      user.setUsername(username);
       return userDao.save(user);
     }
   }

@@ -1,10 +1,11 @@
 package ui;
 
-import com.dto.entities.Item;
-import com.dto.entities.User;
-import com.dto.util.AlertBox;
-import com.dto.util.SceneManager;
-import com.dto.util.UserSession;
+import com.dto.request.CreateItemRequest;
+import com.entities.Item;
+import com.entities.User;
+import com.util.AlertBox;
+import com.util.SceneManager;
+import com.util.UserSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -79,7 +80,10 @@ public class ItemListingController {
             item.setTitle(newItemTitle);
             item.setCurrentPrice(BigDecimal.valueOf(Long.parseLong(newItemPrice)));
             item.setEndTime(LocalDateTime.now().plusSeconds(Integer.parseInt(newItemDuration)));
-            itemService.createItem(item);
+            CreateItemRequest request = new CreateItemRequest(item.getTitle(),
+                    item.getId(),item.getCurrentPrice(),item.getSeller(),item.getWinner(),
+                    item.getEndTime(),item.getAuctionStatus());
+            itemService.createItem(request);
             AlertBox.createAlert("INFORMATION","Thông báo","Tạo sản phẩm mới thành công!","");
             loadItems();
         }

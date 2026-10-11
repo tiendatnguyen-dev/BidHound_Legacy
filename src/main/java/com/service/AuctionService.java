@@ -1,14 +1,14 @@
 package com.service;
 
-import com.dto.entities.User;
-import com.dto.entities.Bid;
-import com.dto.entities.Item;
-import com.dto.mapper.BidMapper;
-import com.dto.mapper.PlaceBidRequest;
-import com.dto.mapper.PlaceBidResponse;
-import com.dto.util.JsonConverter;
-import com.dto.util.MessageEnvelop;
-import com.dto.util.MessageType;
+import com.entities.User;
+import com.entities.Bid;
+import com.entities.Item;
+import com.dto.BidMapper;
+import com.dto.request.PlaceBidRequest;
+import com.dto.response.PlaceBidResponse;
+import com.util.JsonConverter;
+import com.util.MessageEnvelop;
+import com.util.MessageType;
 import com.network.socket.AuctionRoom;
 import com.network.socket.ClientHandler;
 import com.repository.BidRepository;

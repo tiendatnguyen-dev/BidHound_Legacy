@@ -1,4 +1,4 @@
-package com.dto.mapper;
+package com.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

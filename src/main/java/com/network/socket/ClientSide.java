@@ -1,7 +1,7 @@
 package com.network.socket;
 
-import com.dto.util.JsonConverter;
-import com.dto.util.MessageEnvelop;
+import com.util.JsonConverter;
+import com.util.MessageEnvelop;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

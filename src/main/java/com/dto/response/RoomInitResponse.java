@@ -1,6 +1,6 @@
-package com.dto.mapper;
+package com.dto.response;
 
-import com.dto.entities.Bid;
+import com.entities.Bid;
 
 import java.math.BigDecimal;
 import java.util.List;

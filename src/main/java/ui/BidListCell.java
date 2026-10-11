@@ -1,6 +1,6 @@
 package ui;
 
-import com.dto.mapper.PlaceBidResponse;
+import com.dto.response.PlaceBidResponse;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.VBox;

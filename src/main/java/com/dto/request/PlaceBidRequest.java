@@ -1,4 +1,4 @@
-package com.dto.mapper;
+package com.dto.request;
 
 import java.math.BigDecimal;
 

@@ -1,6 +1,6 @@
 package com.repository;
 
-import com.dto.entities.User;
+import com.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

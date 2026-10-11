@@ -1,6 +1,8 @@
 package com.service;
 
-import com.dto.entities.User;
+import com.dto.exceptions.AuthorizedException;
+import com.dto.exceptions.BadRequestException;
+import com.entities.User;
 import com.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,19 +18,21 @@ public class UserService {
   }
 
   public User authenticateUser(Long userId, String username) {
-    User currentUser = userDao.findById(userId).orElse(null);
-    if (currentUser != null && currentUser.getUsername().equals(username)) {
+    User currentUser = userDao.findById(userId).orElseThrow(() -> new AuthorizedException("Not authorized."));
+    if (currentUser.getUsername().equals(username)) {
       return currentUser;
     }
-    return null;
+    throw new AuthorizedException("Not authorized.");
   }
 
   @Transactional
-  public User registerUser(User user) {
-    if (userDao.findByUsername(user.getUsername()).isPresent()) {
-      return null;
+  public User registerUser(String username) {
+    if (userDao.findByUsername(username).isPresent()) {
+      throw new BadRequestException("Username already exists.");
     }
     else {
+      User user = new User();
+      user.setUsername(username);
       return userDao.save(user);
     }
   }

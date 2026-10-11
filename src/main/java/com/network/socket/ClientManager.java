@@ -2,6 +2,9 @@ package com.network.socket;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Quản lí các clients hiện tại.
+ */
 public class ClientManager {
   private static volatile ClientManager instance;
 

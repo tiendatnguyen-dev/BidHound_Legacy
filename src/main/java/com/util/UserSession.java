@@ -1,6 +1,6 @@
-package com.dto.util;
+package com.util;
 
-import com.dto.entities.User;
+import com.entities.User;
 
 public class UserSession {
     private static UserSession instance;

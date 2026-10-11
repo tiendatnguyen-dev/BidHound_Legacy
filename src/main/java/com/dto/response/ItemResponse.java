@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 public record ItemResponse(String title,
                            Long id,
                            BigDecimal currentPrice,
-                           User seller,
-                           User winner,
+                           Long sellerId,
+                           Long winnerId,
                            LocalDateTime endTime,
                            AuctionStatus auctionStatus) {
 }

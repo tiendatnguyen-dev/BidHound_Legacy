@@ -1,9 +1,11 @@
 package com.network.api;
 
+import com.dto.ApiResponse;
 import com.dto.request.AuthRequest;
 import com.dto.response.AuthResponse;
 import com.entities.User;
 import com.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,24 +25,18 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public ResponseEntity<?> login(@RequestBody AuthRequest loginRequest) {
+  public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody AuthRequest loginRequest) {
     User authenticated = userService.authenticateUser(loginRequest.getId(),loginRequest.getUsername());
-    if (authenticated != null) {
-      AuthResponse authResponse = new AuthResponse(authenticated.getId(), authenticated.getUsername());
-      return ResponseEntity.ok(authResponse);
-    } else {
-      return ResponseEntity.status(401).body(Map.of("message", "Incorrect ID / Username"));
-    }
+    AuthResponse authResponse = new AuthResponse(authenticated.getId(), authenticated.getUsername());
+      return ResponseEntity.status(HttpStatus.OK)
+              .body(ApiResponse.success(authResponse, "Log in successfully"));
   }
 
   @PostMapping("/register")
-  public ResponseEntity<?> register(@RequestBody AuthRequest registerRequest) {
+  public ResponseEntity<ApiResponse<AuthResponse>> register(@RequestBody AuthRequest registerRequest) {
     User registered = userService.registerUser(registerRequest.getUsername());
-    if (registered != null) {
-      AuthResponse registerResponse = new AuthResponse(registered.getId(), registered.getUsername());
-      return ResponseEntity.ok(registerResponse);
-    } else {
-      return ResponseEntity.badRequest().body(Map.of("message","Username already exists"));
-    }
+    AuthResponse registerResponse = new AuthResponse(registered.getId(), registered.getUsername());
+    return ResponseEntity.status(HttpStatus.CREATED)
+              .body(ApiResponse.success(registerResponse,"Registered successfully"));
   }
 }

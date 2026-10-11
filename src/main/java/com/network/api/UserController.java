@@ -1,7 +1,11 @@
 package com.network.api;
 
+import com.dto.ApiResponse;
+import com.dto.request.ItemRequest;
+import com.dto.response.ItemResponse;
 import com.entities.Item;
 import com.service.ItemService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,13 +25,8 @@ public class UserController {
   }
 
   @GetMapping("/{userId}/history")
-  public ResponseEntity<?> getAuctionHistory(@PathVariable ("userId") Long userId) {
-    List<Item> history = itemService.getUserAuctionHistory(userId);
-    if (history != null) {
-      return ResponseEntity.ok(history);
-    }
-    else {
-      return ResponseEntity.badRequest().body(Map.of("message", "User not found."));
-    }
+  public ResponseEntity<ApiResponse<List<ItemResponse>>> getAuctionHistory(@PathVariable ("userId") Long userId) {
+    List<ItemResponse> history = itemService.getUserAuctionHistory(userId);
+    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(history));
   }
 }

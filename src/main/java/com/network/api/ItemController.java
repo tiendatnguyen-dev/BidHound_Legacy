@@ -1,10 +1,12 @@
 package com.network.api;
 
 
+import com.dto.ApiResponse;
 import com.dto.request.CreateItemRequest;
 import com.dto.response.ItemResponse;
 import com.entities.Item;
 import com.service.ItemService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/items")
@@ -26,39 +27,26 @@ public class ItemController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<?> getDetail(@PathVariable("id") Long itemId) {
+  public ResponseEntity<ApiResponse<ItemResponse>> getDetail(@PathVariable("id") Long itemId) {
     Item detailedItem = itemService.getDetail(itemId);
+    Long winnerId = detailedItem.getWinner() != null ? detailedItem.getWinner().getId() : null;
 
-    if (detailedItem != null) {
       ItemResponse getItemResponse = new ItemResponse(detailedItem.getTitle(),
-              detailedItem.getId(), detailedItem.getCurrentPrice(), detailedItem.getSeller(),
-              detailedItem.getWinner(), detailedItem.getEndTime(), detailedItem.getAuctionStatus());
+              detailedItem.getId(), detailedItem.getCurrentPrice(), detailedItem.getSeller().getId(),
+              winnerId, detailedItem.getEndTime(), detailedItem.getAuctionStatus());
 
-      return ResponseEntity.ok(getItemResponse);
-    }
-    else {
-      return ResponseEntity.badRequest().body(Map.of("message","Item not found"));
-    }
-
+      return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(getItemResponse));
   }
 
   @GetMapping
-  public ResponseEntity<?> getItemList() {
-    List<Item> items = itemService.getList();
-    if (items != null) {
-      return ResponseEntity.ok(items);
-    } else {
-      return ResponseEntity.badRequest().body(Map.of("message","An error occured with the server."));
-    }
+  public ResponseEntity<ApiResponse<List<ItemResponse>>> getItemList() {
+    List<ItemResponse> items = itemService.getList();
+    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(items));
   }
 
   @PostMapping
-  public ResponseEntity<?> createItem(@RequestBody CreateItemRequest createItemRequest) {
+  public ResponseEntity<ApiResponse<Long>> createItem(@RequestBody CreateItemRequest createItemRequest) {
     Item item = itemService.createItem(createItemRequest);
-    if (item != null) {
-      return ResponseEntity.ok(item);
-    } else {
-      return ResponseEntity.badRequest().body(Map.of("message", "An error occured with the server database."));
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(item.getId(), "Item created"));
   }
 }
